@@ -69,7 +69,7 @@ namespace Cabal2._0
         // Para liberar recursos no administrados (si los hubiera)
         public void Dispose()
         {
-            // Ejemplo: Cerrar conexiones a BD o archivos abiertos
+            // Ejemplo: Cerrar conexiones a BD o archivos abiertos .
         }
     }
 }
