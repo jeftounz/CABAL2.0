@@ -11,11 +11,9 @@ namespace Cabal2._0
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Crea una instancia de Procesador (implementación de IProcesador)
-            IProcesador procesador = new Procesador(); //  Aquí instanciamos la dependencia
-
-            // Pasa el procesador al constructor de Form1
-            Application.Run(new Form1(procesador)); // Ahora sí cumple con el parámetro requerido
+            // Configuración de dependencias
+            IProcesador procesador = new Procesador();
+            Application.Run(new Form1(procesador));
         }
     }
 }

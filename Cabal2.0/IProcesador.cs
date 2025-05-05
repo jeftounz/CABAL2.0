@@ -13,8 +13,7 @@ namespace Cabal2._0
     {
         // Método para convertir un archivo de texto en un DataTable filtrado por idioma
         // - location: Ruta del archivo
-        // - delimeter: Carácter separador (por defecto ',')
         // - idiomaFiltro: Idioma para filtrar (ej. "Español")
-        DataTable DataTableFromTextFile(string location, char delimeter = ',', string idiomaFiltro = null);
+        DataTable DataTableFromFile(string location, string idiomaFiltro = null);
     }
 }

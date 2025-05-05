@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Windows.Forms;
+using System.Data;
 
 namespace Cabal2._0
 {
@@ -9,113 +9,147 @@ namespace Cabal2._0
     {
         // Lista de paneles para navegación
         private readonly List<Panel> _paneles = new List<Panel>();
-        private int _indicePanelActual; // Panel actual visible
+        private int _indicePanelActual;
 
         // Dependencia inyectada para procesar archivos
         private readonly IProcesador _procesador;
 
-        // Constructor que recibe el procesador (inyección de dependencias)
+        // Constructor con inyección de dependencias
         public Form1(IProcesador procesador)
         {
-            _procesador = procesador;
             InitializeComponent();
+            _procesador = procesador;
         }
 
-        // Al cargar el formulario
+        // Evento Load del formulario
         private void Form1_Load(object sender, EventArgs e)
         {
-            _paneles.Add(panel1); // Panel 1: Selección de idioma
-            _paneles.Add(panel2); // Panel 2: Visualización de datos
-            _paneles[_indicePanelActual].BringToFront(); // Muestra el panel inicial
-            ActualizarVisibilidadBotones(); // Ajusta botones
+            // Configuración inicial de paneles
+            _paneles.Add(panel1);  // Panel de selección de idioma
+            _paneles.Add(panel2);  // Panel de visualización de datos
+            _paneles[_indicePanelActual].BringToFront();
+
+            // Configura visibilidad de botones
+            ActualizarVisibilidadBotones();
         }
 
-        // Botón "Continuar"
-        private void btnContinuar_Click(object sender, EventArgs e)
-        {
-            if (!IdiomaSeleccionado())
-            {
-                MostrarError("Por favor seleccione un idioma!");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(textBox1.Text))
-            {
-                MostrarError("Por favor suba un archivo primero!");
-                return;
-            }
-
-            if (_indicePanelActual < _paneles.Count - 1)
-            {
-                _paneles[++_indicePanelActual].BringToFront(); // Avanza al siguiente panel
-                ActualizarVisibilidadBotones();
-            }
-        }
-
-        // Botón "Volver"
-        private void BtnVolver_Click(object sender, EventArgs e)
-        {
-            if (_indicePanelActual > 0)
-            {
-                LimpiarDataGridView(); // Limpia la tabla
-                textBox1.Text = string.Empty; // Limpia la ruta del archivo
-                _paneles[--_indicePanelActual].BringToFront(); // Retrocede al panel anterior
-                ActualizarVisibilidadBotones();
-            }
-        }
-
-        // Botón "Buscar Archivo"
+        // Botón para buscar archivos
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            using (var openFileDialog = new OpenFileDialog()) // Diálogo para seleccionar archivo
+            using (var openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Title = "Buscar archivo de texto";
-                openFileDialog.Filter = "txt files (*.txt)|*.txt";
+                openFileDialog.Title = "Seleccionar archivo";
+                openFileDialog.Filter = "Archivos compatibles (*.csv, *.txt)|*.csv;*.txt";
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    ProcesarArchivo(openFileDialog.FileName); // Procesa el archivo seleccionado
+                    ProcesarArchivo(openFileDialog.FileName);
                 }
             }
         }
 
-        // === Métodos auxiliares ===
+        // Procesa el archivo seleccionado
+        private void ProcesarArchivo(string rutaArchivo)
+        {
+            try
+            {
+                if (!IdiomaSeleccionado())
+                {
+                    MessageBox.Show("Por favor seleccione un idioma primero.", "Advertencia",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                textBox1.Text = rutaArchivo;
+                string idioma = RbEspanol.Checked ? "Español" : "Inglés";
+
+                // Usa el procesador para obtener los datos
+                dataGridView1.DataSource = _procesador.DataTableFromFile(rutaArchivo, idioma);
+
+                // Ajusta automáticamente el ancho de las columnas
+                dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al procesar el archivo:\n{ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Botón Continuar 
+        private void btnContinuar_Click(object sender, EventArgs e)
+        {
+            if (_indicePanelActual < _paneles.Count - 1) 
+            {
+                if (!IdiomaSeleccionado())
+                {
+                    MessageBox.Show("Por favor seleccione un idioma.", "Advertencia",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(textBox1.Text))
+                {
+                    MessageBox.Show("Por favor seleccione un archivo primero.", "Advertencia",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                _paneles[++_indicePanelActual].BringToFront();
+                ActualizarVisibilidadBotones();
+            }
+        }
+
+        // Botón Volver
+        private void BtnVolver_Click(object sender, EventArgs e)
+        {
+            if (_indicePanelActual > 0)
+            {
+                LimpiarDataGridView();
+                textBox1.Text = string.Empty;
+                _paneles[--_indicePanelActual].BringToFront();
+                ActualizarVisibilidadBotones();
+            }
+        }
+
+        // --- Métodos auxiliares ---
 
         // Verifica si se seleccionó un idioma
         private bool IdiomaSeleccionado() => RbEspanol.Checked || RbIngles.Checked;
 
-        // Actualiza la visibilidad de los botones "Volver" y "Continuar"
+        // Actualiza la visibilidad de los botones de navegación
         private void ActualizarVisibilidadBotones()
         {
             BtnVolver.Visible = (_indicePanelActual > 0);
             btnContinuar.Visible = (_indicePanelActual < _paneles.Count - 1);
+
+            // Cambiar texto del botón Continuar si es el último panel
+            if (!btnContinuar.Visible)
+            {
+                btnContinuar.Text = "Finalizar";
+            }
+            else
+            {
+                btnContinuar.Text = "Continuar";
+            }
         }
 
         // Limpia el DataGridView
         private void LimpiarDataGridView()
         {
             dataGridView1.DataSource = null;
+            dataGridView1.Rows.Clear();
+            dataGridView1.Columns.Clear();
         }
 
-        // Muestra un mensaje de error
-        private void MostrarError(string mensaje)
+        // Evento para manejar el cambio de selección de idioma
+        private void RbIdioma_CheckedChanged(object sender, EventArgs e)
         {
-            MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        // Procesa el archivo y carga los datos en el DataGridView
-        private void ProcesarArchivo(string rutaArchivo)
-        {
-            try
+            if (RbEspanol.Checked || RbIngles.Checked)
             {
-                textBox1.Text = rutaArchivo;
-                string idioma = RbEspanol.Checked ? "Español" : "Inglés";
-                dataGridView1.DataSource = _procesador.DataTableFromTextFile(rutaArchivo, ',', idioma);
-            }
-            catch (Exception ex)
-            {
-                MostrarError($"Error al cargar el archivo: {ex.Message}");
+                //Habilitar botones cuando se selecciona un idioma
+                btnContinuar.Enabled = true;
             }
         }
     }
