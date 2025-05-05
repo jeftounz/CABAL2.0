@@ -21,7 +21,7 @@ INICIO
         Actualizar visibilidad de botones
 
     MÉTODO btnBuscar_Click:
-        Abrir diálogo para seleccionar archivo .txt
+        Abrir diálogo para seleccionar archivo .txt oh .csv
         SI archivo válido Y idioma seleccionado ENTONCES
             Procesar archivo (Procesador.DataTableFromTextFile)
             Mostrar datos en DataGridView
@@ -58,7 +58,7 @@ Cabal2.0/
 ## 🔄 Flujo de Trabajo
 Selección de Archivo:
 
-El usuario elige un archivo .txt y un idioma.
+El usuario elige un archivo .txt o .csv y un idioma.
 
 El programa valida que los campos no estén vacíos.
 
