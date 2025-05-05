@@ -1,5 +1,5 @@
 # CABAL2.0 📖 
-🚀 Descripción del Proyecto
+## 🚀 Descripción del Proyecto
 Aplicación Windows Forms en C# que procesa archivos de texto (.txt) con datos de libros, filtra por idioma (Español/Inglés) y muestra los resultados en una interfaz gráfica.
 
 🔧 Requisitos
@@ -21,7 +21,7 @@ INICIO
         Actualizar visibilidad de botones
 
     MÉTODO btnBuscar_Click:
-        Abrir diálogo para seleccionar archivo .txt
+        Abrir diálogo para seleccionar archivo .txt oh .csv
         SI archivo válido Y idioma seleccionado ENTONCES
             Procesar archivo (Procesador.DataTableFromTextFile)
             Mostrar datos en DataGridView
@@ -48,18 +48,17 @@ INICIO
 FIN
 
 ## 📂 Estructura del Código
-plaintext
 Cabal2.0/
-├── IProcesador.cs            // Interfaz para procesamiento
-├── Procesador.cs             // Lógica de filtrado y conversión
-├── Form1.cs                  // Interfaz gráfica y eventos
-├── Program.cs                // Punto de entrada (inyección de dependencias)
-└── README.md                 // Documentación
+- IProcesador.cs            // Interfaz para procesamiento
+- Procesador.cs             // Lógica de filtrado y conversión
+- Form1.cs                  // Interfaz gráfica y eventos
+- Program.cs                // Punto de entrada (inyección de dependencias)
+- README.md                 // Documentación
 
 ## 🔄 Flujo de Trabajo
 Selección de Archivo:
 
-El usuario elige un archivo .txt y un idioma.
+El usuario elige un archivo .txt o .csv y un idioma.
 
 El programa valida que los campos no estén vacíos.
 
@@ -76,6 +75,11 @@ Navegación:
 Botones "Continuar" y "Volver" permiten moverse entre paneles.
 
 ## 📊 Diagrama de Flujo Simplificado
+<<<<<<< HEAD
 
 ![Diagrama!](cabal Diagrama de flujo.png)
+=======
+![Diagrama](Diagrama.png)
+
+>>>>>>> fb8ff25baf7fd1923d9e8dbb175bdc16611bce01
 
