@@ -75,6 +75,6 @@ Navegación:
 Botones "Continuar" y "Volver" permiten moverse entre paneles.
 
 ## 📊 Diagrama de Flujo Simplificado
-![Diagrama](./cabal Diagrama de flujo.png)
+![Diagrama](Diagrama.png)
 
 
