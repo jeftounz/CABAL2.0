@@ -75,6 +75,6 @@ Navegación:
 
 Botones "Continuar" y "Volver" permiten moverse entre paneles.
 
-📊 Diagrama de Flujo Simplificado
-
+## 📊 Diagrama de Flujo Simplificado
+![Databrick project whit Snoflake](cabal Diagrama de flujo.png)
 
