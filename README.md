@@ -48,13 +48,12 @@ INICIO
 FIN
 
 ## 📂 Estructura del Código
-plaintext
 Cabal2.0/
-├── IProcesador.cs            // Interfaz para procesamiento
-├── Procesador.cs             // Lógica de filtrado y conversión
-├── Form1.cs                  // Interfaz gráfica y eventos
-├── Program.cs                // Punto de entrada (inyección de dependencias)
-└── README.md                 // Documentación
+- IProcesador.cs            // Interfaz para procesamiento
+- Procesador.cs             // Lógica de filtrado y conversión
+- Form1.cs                  // Interfaz gráfica y eventos
+- Program.cs                // Punto de entrada (inyección de dependencias)
+- README.md                 // Documentación
 
 ## 🔄 Flujo de Trabajo
 Selección de Archivo:
