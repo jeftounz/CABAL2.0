@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Cabal2._0
 {
-    // Clase que implementa la lógica para procesar archivos de texto
+    // Clase que implementa la lógica para procesar archivos de texto oh csv
     public class Procesador : IProcesador, IDisposable
     {
         // Convierte un archivo en DataTable aplicando filtros
