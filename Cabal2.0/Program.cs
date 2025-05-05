@@ -12,10 +12,10 @@ namespace Cabal2._0
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Crea una instancia de Procesador (implementación de IProcesador)
-            IProcesador procesador = new Procesador(); // ✅ Aquí instanciamos la dependencia
+            IProcesador procesador = new Procesador(); //  Aquí instanciamos la dependencia
 
             // Pasa el procesador al constructor de Form1
-            Application.Run(new Form1(procesador)); // ✅ Ahora sí cumple con el parámetro requerido
+            Application.Run(new Form1(procesador)); // Ahora sí cumple con el parámetro requerido
         }
     }
 }

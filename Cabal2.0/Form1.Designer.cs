@@ -32,11 +32,11 @@ namespace Cabal2._0
             this.btnContinuar = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.RbEspanol = new System.Windows.Forms.RadioButton();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.RbIngles = new System.Windows.Forms.RadioButton();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.BtnVolver = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.panel1.SuspendLayout();
@@ -77,24 +77,6 @@ namespace Cabal2._0
             this.RbEspanol.Text = "Español";
             this.RbEspanol.UseVisualStyleBackColor = true;
             // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.SystemColors.Control;
-            this.panel2.Controls.Add(this.dataGridView1);
-            this.panel2.Location = new System.Drawing.Point(76, 22);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(658, 319);
-            this.panel2.TabIndex = 2;
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(19, 15);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(619, 287);
-            this.dataGridView1.TabIndex = 0;
-          //  this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            // 
             // btnBuscar
             // 
             this.btnBuscar.Location = new System.Drawing.Point(400, 15);
@@ -123,6 +105,23 @@ namespace Cabal2._0
             this.RbIngles.TabStop = true;
             this.RbIngles.Text = "Inglés";
             this.RbIngles.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.panel2.Controls.Add(this.dataGridView1);
+            this.panel2.Location = new System.Drawing.Point(59, 22);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(658, 319);
+            this.panel2.TabIndex = 2;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(19, 15);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(619, 287);
+            this.dataGridView1.TabIndex = 0;
             // 
             // BtnVolver
             // 
