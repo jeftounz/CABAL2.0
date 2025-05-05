@@ -1,6 +1,6 @@
 # CABAL2.0 📖 
 ## 🚀 Descripción del Proyecto
-Aplicación Windows Forms en C# que procesa archivos de texto (.txt) con datos de libros, filtra por idioma (Español/Inglés) y muestra los resultados en una interfaz gráfica.
+Aplicación Windows Forms en C# que procesa archivos de texto (.txt)/(.csv) con datos de libros, filtra por idioma (Español/Inglés) y muestra los resultados en una interfaz gráfica.
 
 🔧 Requisitos
 .NET Framework 4.7.2 o superior.
@@ -75,11 +75,8 @@ Navegación:
 Botones "Continuar" y "Volver" permiten moverse entre paneles.
 
 ## 📊 Diagrama de Flujo Simplificado
-<<<<<<< HEAD
 
-![Diagrama!](cabal Diagrama de flujo.png)
-=======
 ![Diagrama](Diagrama.png)
 
->>>>>>> fb8ff25baf7fd1923d9e8dbb175bdc16611bce01
+
 
