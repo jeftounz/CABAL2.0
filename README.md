@@ -58,7 +58,7 @@ Cabal2.0/
 ## 🔄 Flujo de Trabajo
 Selección de Archivo:
 
-El usuario elige un archivo .txt o .csv y un idioma.
+El usuario elige un archivo .txt o .csv y un idioma; **NOTA: Hay dos archivos en la carpeta "archivos de prueba" para probarlo.**.
 
 El programa valida que los campos no estén vacíos.
 
@@ -78,5 +78,8 @@ Botones "Continuar" y "Volver" permiten moverse entre paneles.
 
 ![Diagrama](Diagrama.png)
 
+## 📝 Estructura de Archivos de Datos
 
+🔑 Columnas Clave Requeridas: 
 
+Título, Autor, Género, NroPaginas, Idioma, Precio.
