@@ -1,59 +1,59 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 
 namespace Cabal2._0
 {
-        //Clase para procesar información y filtrarla
-    public static class procesador
+    // Clase que implementa la lógica para procesar archivos de texto
+    public class Procesador : IProcesador, IDisposable
     {
-        public static string file;
-
-        public static DataTable DataTableFromTextFile(string location, char delimeter = ',', string idiomaFiltro = null)
+        // Convierte un archivo en DataTable aplicando filtros
+        public DataTable DataTableFromTextFile(string location, char delimeter = ',', string idiomaFiltro = null)
         {
-            // Leer todas las líneas del archivo
-            string[] todasLasLineas = File.ReadAllLines(location);
+            // 1. Lee y filtra las líneas del archivo
+            var lineas = LeerLineasFiltradas(location, delimeter, idiomaFiltro).ToArray();
 
-            // Obtener las líneas que coinciden con el filtro de idioma
-            var lineasFiltradas = FiltrarLineasPorIdioma(todasLasLineas, delimeter, idiomaFiltro);
-
-            // Convertir a DataTable
-            return ConvertirLineasADataTable(lineasFiltradas, delimeter);
+            // 2. Convierte las líneas filtradas en DataTable
+            return ConvertirLineasADataTable(lineas, delimeter);
         }
 
-        private static string[] FiltrarLineasPorIdioma(string[] lineas, char delimeter, string idiomaFiltro)
+        // Lee un archivo línea por línea y filtra por idioma
+        private IEnumerable<string> LeerLineasFiltradas(string ruta, char delimitador, string idiomaFiltro)
         {
-            if (string.IsNullOrEmpty(idiomaFiltro))
-                return lineas;
+            using (var reader = new StreamReader(ruta)) // Libera recursos al finalizar
+            {
+                // Lee la cabecera (primera línea)
+                string cabecera = reader.ReadLine();
+                yield return cabecera;
 
-            // Obtener el índice de la columna "Idioma"
-            string[] cabeceras = lineas[0].Split(delimeter);
-            int indiceIdioma = Array.IndexOf(cabeceras, "Idioma");
+                // Busca la posición de la columna "Idioma"
+                int indiceIdioma = Array.IndexOf(cabecera.Split(delimitador), "Idioma");
+                if (indiceIdioma == -1) yield break; // Si no existe, termina
 
-            if (indiceIdioma == -1)
-                throw new Exception("El archivo no contiene la columna 'Idioma'");
-
-            // Filtrar líneas (incluyendo siempre la cabecera)
-            return lineas.Where((linea, index) =>
-                index == 0 || // Incluir siempre la cabecera
-                linea.Split(delimeter)[indiceIdioma].Trim().Equals(idiomaFiltro, StringComparison.OrdinalIgnoreCase)
-            ).ToArray();
+                // Lee el resto de líneas y filtra
+                string linea;
+                while ((linea = reader.ReadLine()) != null)
+                {
+                    if (linea.Split(delimitador)[indiceIdioma].Trim()
+                        .Equals(idiomaFiltro, StringComparison.OrdinalIgnoreCase))
+                        yield return linea; // Devuelve solo líneas que coincidan con el idioma
+                }
+            }
         }
 
-        private static DataTable ConvertirLineasADataTable(string[] lineas, char delimeter)
+        // Convierte un array de líneas en DataTable
+        private DataTable ConvertirLineasADataTable(string[] lineas, char delimeter)
         {
             DataTable dt = new DataTable();
+            if (lineas.Length == 0) return dt; // Si no hay datos, retorna tabla vacía
 
-            if (lineas.Length == 0)
-                return dt;
-
-            // Agregar columnas
-            string[] columnas = lineas[0].Split(delimeter);
-            foreach (string columna in columnas)
+            // Agrega las columnas desde la cabecera
+            foreach (string columna in lineas[0].Split(delimeter))
                 dt.Columns.Add(columna.Trim(), typeof(string));
 
-            // Agregar filas
+            // Agrega las filas (omitiendo la cabecera)
             for (int i = 1; i < lineas.Length; i++)
             {
                 string[] valores = lineas[i].Split(delimeter);
@@ -64,6 +64,12 @@ namespace Cabal2._0
             }
 
             return dt;
+        }
+
+        // Para liberar recursos no administrados (si los hubiera)
+        public void Dispose()
+        {
+            // Ejemplo: Cerrar conexiones a BD o archivos abiertos
         }
     }
 }

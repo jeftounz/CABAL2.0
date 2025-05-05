@@ -1,125 +1,122 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Windows.Forms;
 
 namespace Cabal2._0
 {
     public partial class Form1 : Form
     {
-        List<Panel> listPanel = new List<Panel>();
-        int index;
+        // Lista de paneles para navegación
+        private readonly List<Panel> _paneles = new List<Panel>();
+        private int _indicePanelActual; // Panel actual visible
 
-        public Form1()
+        // Dependencia inyectada para procesar archivos
+        private readonly IProcesador _procesador;
+
+        // Constructor que recibe el procesador (inyección de dependencias)
+        public Form1(IProcesador procesador)
         {
+            _procesador = procesador;
             InitializeComponent();
         }
+
+        // Al cargar el formulario
         private void Form1_Load(object sender, EventArgs e)
         {
-            listPanel.Add(panel1);
-            listPanel.Add(panel2);
-            listPanel[index].BringToFront();
-
-            // Configurar visibilidad inicial de los botones
-            EstadoBoton();
+            _paneles.Add(panel1); // Panel 1: Selección de idioma
+            _paneles.Add(panel2); // Panel 2: Visualización de datos
+            _paneles[_indicePanelActual].BringToFront(); // Muestra el panel inicial
+            ActualizarVisibilidadBotones(); // Ajusta botones
         }
 
+        // Botón "Continuar"
         private void btnContinuar_Click(object sender, EventArgs e)
         {
-
-            if (index < listPanel.Count - 1)
+            if (!IdiomaSeleccionado())
             {
-                if (!RbEspanol.Checked && !RbIngles.Checked)
-                {
-                    MessageBox.Show("Porfavor Seleccione un idioma!","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(textBox1.Text))
-                    {
-                        MessageBox.Show("Por favor suba un archivo primero!", "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    { 
-                        listPanel[++index].BringToFront();
-                        EstadoBoton(); // Actualizar visibilidad de botones
-                    }
-                    
-                }
-                
+                MostrarError("Por favor seleccione un idioma!");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(textBox1.Text))
+            {
+                MostrarError("Por favor suba un archivo primero!");
+                return;
+            }
+
+            if (_indicePanelActual < _paneles.Count - 1)
+            {
+                _paneles[++_indicePanelActual].BringToFront(); // Avanza al siguiente panel
+                ActualizarVisibilidadBotones();
             }
         }
 
+        // Botón "Volver"
         private void BtnVolver_Click(object sender, EventArgs e)
         {
-            if (index > 0)
+            if (_indicePanelActual > 0)
             {
-                // Limpiar el DataGridView
-                dataGridView1.DataSource = null;
-                dataGridView1.Rows.Clear();
-                dataGridView1.Columns.Clear();
-
-                // Vaciar la ruta del archivo
-                textBox1.Text = string.Empty;
-
-                // Volver al panel anterior
-                listPanel[--index].BringToFront();
-                EstadoBoton();
+                LimpiarDataGridView(); // Limpia la tabla
+                textBox1.Text = string.Empty; // Limpia la ruta del archivo
+                _paneles[--_indicePanelActual].BringToFront(); // Retrocede al panel anterior
+                ActualizarVisibilidadBotones();
             }
         }
 
-
-        // Método para actualizar la visibilidad de los botones
-        private void EstadoBoton()
-        {
-            BtnVolver.Visible = (index > 0);
-            btnContinuar.Visible = (index < listPanel.Count - 1);
-        }
-
-
-        //Método para buscar el archivo y procesarlo con la clase procesador
+        // Botón "Buscar Archivo"
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            using (var openFileDialog = new OpenFileDialog()) // Diálogo para seleccionar archivo
             {
-                Title = "Buscar archivo de texto",
-                Filter = "txt files (*.txt)|*.txt",
-                RestoreDirectory = true
-            };
+                openFileDialog.Title = "Buscar archivo de texto";
+                openFileDialog.Filter = "txt files (*.txt)|*.txt";
+                openFileDialog.RestoreDirectory = true;
 
-            string idiomaFiltro = null;
-
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                
-
-                if (RbEspanol.Checked)
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    idiomaFiltro = "Español";
-                    MessageBox.Show("Filtrando libros en Español", "Información",
-                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else if (RbIngles.Checked)
-                {
-                    idiomaFiltro = "Inglés";
-                    MessageBox.Show("Filtrando libros en Inglés", "Información",
-                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                try
-                {
-                    textBox1.Text = openFileDialog1.FileName;
-                    dataGridView1.DataSource = procesador.DataTableFromTextFile(
-                        location: openFileDialog1.FileName,
-                        idiomaFiltro: idiomaFiltro
-                    );
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error al cargar el archivo: {ex.Message}", "Error",
-                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ProcesarArchivo(openFileDialog.FileName); // Procesa el archivo seleccionado
                 }
             }
         }
 
+        // === Métodos auxiliares ===
+
+        // Verifica si se seleccionó un idioma
+        private bool IdiomaSeleccionado() => RbEspanol.Checked || RbIngles.Checked;
+
+        // Actualiza la visibilidad de los botones "Volver" y "Continuar"
+        private void ActualizarVisibilidadBotones()
+        {
+            BtnVolver.Visible = (_indicePanelActual > 0);
+            btnContinuar.Visible = (_indicePanelActual < _paneles.Count - 1);
+        }
+
+        // Limpia el DataGridView
+        private void LimpiarDataGridView()
+        {
+            dataGridView1.DataSource = null;
+        }
+
+        // Muestra un mensaje de error
+        private void MostrarError(string mensaje)
+        {
+            MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        // Procesa el archivo y carga los datos en el DataGridView
+        private void ProcesarArchivo(string rutaArchivo)
+        {
+            try
+            {
+                textBox1.Text = rutaArchivo;
+                string idioma = RbEspanol.Checked ? "Español" : "Inglés";
+                dataGridView1.DataSource = _procesador.DataTableFromTextFile(rutaArchivo, ',', idioma);
+            }
+            catch (Exception ex)
+            {
+                MostrarError($"Error al cargar el archivo: {ex.Message}");
+            }
+        }
     }
 }
