@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Cabal2._0
 {
+        //Clase para procesar información y filtrarla
     public static class procesador
     {
         public static string file;
